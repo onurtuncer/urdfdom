@@ -122,4 +122,4 @@ endif()
 #  FILE "urdfdomExport.cmake"
 #)
 
-INSTALL(DIRECTORY include/urdf_parser DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+#INSTALL(DIRECTORY include/urdf_parser DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
