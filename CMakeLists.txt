@@ -64,37 +64,37 @@ string(REGEX REPLACE "[^/]+" ".." RELATIVE_PATH_LIBDIR_TO_PREFIX "${CMAKE_INSTAL
 
 add_subdirectory(urdf_parser)
 
-set(PKG_NAME ${PROJECT_NAME})
-set(PKG_LIBRARIES urdfdom_sensor urdfdom_model urdfdom_world)
-set(PKG_DEPENDS urdfdom_headers)
-set(PKG_EXPORTS urdfdom)
-set(cmake_conf_file "cmake/urdfdom-config")
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/${cmake_conf_file}Version.cmake"
-  VERSION ${URDF_VERSION}
-  COMPATIBILITY SameMajorVersion
-)
-configure_package_config_file("${cmake_conf_file}.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${cmake_conf_file}.cmake"
-  INSTALL_DESTINATION ${CMAKE_CONFIG_INSTALL_DIR}
-)
-install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/${cmake_conf_file}.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/${cmake_conf_file}Version.cmake"
-  DESTINATION ${CMAKE_CONFIG_INSTALL_DIR}
-)
-
-install(FILES package.xml DESTINATION share/${PROJECT_NAME})
+#set(PKG_NAME ${PROJECT_NAME})
+#set(PKG_LIBRARIES urdfdom_sensor urdfdom_model urdfdom_world)
+#set(PKG_DEPENDS urdfdom_headers)
+#set(PKG_EXPORTS urdfdom)
+#set(cmake_conf_file "cmake/urdfdom-config")
+#include(CMakePackageConfigHelpers)
+#write_basic_package_version_file(
+#  "${CMAKE_CURRENT_BINARY_DIR}/${cmake_conf_file}Version.cmake"
+#  VERSION ${URDF_VERSION}
+#  COMPATIBILITY SameMajorVersion
+#)
+#configure_package_config_file("${cmake_conf_file}.cmake.in"
+#  "${CMAKE_CURRENT_BINARY_DIR}/${cmake_conf_file}.cmake"
+#  INSTALL_DESTINATION ${CMAKE_CONFIG_INSTALL_DIR}
+#)
+#install(FILES
+#  "${CMAKE_CURRENT_BINARY_DIR}/${cmake_conf_file}.cmake"
+#  "${CMAKE_CURRENT_BINARY_DIR}/${cmake_conf_file}Version.cmake"
+#  DESTINATION ${CMAKE_CONFIG_INSTALL_DIR}
+#)
+#
+#install(FILES package.xml DESTINATION share/${PROJECT_NAME})
 
 # Make the package config file
-set(PKG_DESC "Unified Robot Description Format")
-set(PKG_DEPENDS "urdfdom_headers") # make the list separated by spaces instead of ;
-set(PKG_URDF_LIBS "-lurdfdom_sensor -lurdfdom_model -lurdfdom_world")
-set(pkg_conf_file "cmake/pkgconfig/urdfdom.pc")
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${pkg_conf_file}.in" "${CMAKE_BINARY_DIR}/${pkg_conf_file}" @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/${pkg_conf_file}
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/ COMPONENT pkgconfig)
+#set(PKG_DESC "Unified Robot Description Format")
+#set(PKG_DEPENDS "urdfdom_headers") # make the list separated by spaces instead of ;
+#set(PKG_URDF_LIBS "-lurdfdom_sensor -lurdfdom_model -lurdfdom_world")
+#set(pkg_conf_file "cmake/pkgconfig/urdfdom.pc")
+#configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${pkg_conf_file}.in" "${CMAKE_BINARY_DIR}/${pkg_conf_file}" @ONLY)
+#install(FILES ${CMAKE_BINARY_DIR}/${pkg_conf_file}
+#  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/ COMPONENT pkgconfig)
 
 
 # Add uninstall target

@@ -8,7 +8,7 @@ macro(add_urdfdom_library)
   add_library(urdfdom::${add_urdfdom_library_LIBNAME} ALIAS ${add_urdfdom_library_LIBNAME})
   target_include_directories(${add_urdfdom_library_LIBNAME} PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+ #   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
   target_link_libraries(${add_urdfdom_library_LIBNAME} PUBLIC
     ${add_urdfdom_library_LINK}
     ${urdfdom_headers_link_libs}
@@ -67,7 +67,7 @@ add_urdfdom_library(
 add_library(urdf_parser INTERFACE)
 target_include_directories(urdf_parser INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+#  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 target_link_libraries(urdf_parser INTERFACE
   urdfdom::urdfdom_model
   urdfdom::urdfdom_sensor
@@ -94,32 +94,32 @@ if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-INSTALL(
-  TARGETS
-  check_urdf
-  urdf_to_graphviz
-  urdf_mem_test
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-INSTALL(
-  TARGETS
-  urdfdom_model
-  urdfdom_world
-  urdfdom_sensor
-  urdf_parser
-  EXPORT
-  urdfdom
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-install(
-  EXPORT urdfdom
-  DESTINATION ${CMAKE_CONFIG_INSTALL_DIR}
-  NAMESPACE "${PROJECT_NAME}::"
-  FILE "urdfdomExport.cmake"
-)
+#INSTALL(
+#  TARGETS
+#  check_urdf
+#  urdf_to_graphviz
+#  urdf_mem_test
+#  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#)
+#INSTALL(
+#  TARGETS
+#  urdfdom_model
+#  urdfdom_world
+#  urdfdom_sensor
+#  urdf_parser
+#  EXPORT
+#  urdfdom
+#  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#)
+#install(
+#  EXPORT urdfdom
+#  DESTINATION ${CMAKE_CONFIG_INSTALL_DIR}
+#  NAMESPACE "${PROJECT_NAME}::"
+#  FILE "urdfdomExport.cmake"
+#)
 
 INSTALL(DIRECTORY include/urdf_parser DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
