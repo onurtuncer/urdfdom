@@ -10,6 +10,8 @@ set (URDF_MAJOR_MINOR_VERSION ${URDF_MAJOR_VERSION}.${URDF_MINOR_VERSION})
 
 message (STATUS "${PROJECT_NAME} version ${URDF_VERSION}")
 
+set(CMAKE_SKIP_INSTALL_RULES ON CACHE BOOL "" FORCE)
+
 include(GNUInstallDirs)
 
 option(APPEND_PROJECT_NAME_TO_INCLUDEDIR
@@ -45,22 +47,71 @@ endif (MSVC OR MSVC90 OR MSVC10)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package(TinyXML2 REQUIRED)
+add_subdirectory(vendor/tinyxml2)
+add_subdirectory(vendor/console_bridge)
 
-find_package(urdfdom_headers REQUIRED)
-find_package(console_bridge_vendor QUIET) # Provides console_bridge 0.4.0 on platforms without it.
-find_package(console_bridge REQUIRED)
+function(_force_default_visibility tgt)
+  if(NOT TARGET ${tgt})
+    return()
+  endif()
+
+  # If it's an ALIAS target, resolve to the real target name
+  get_target_property(_aliased ${tgt} ALIASED_TARGET)
+  if(_aliased)
+    set(_real ${_aliased})
+  else()
+    set(_real ${tgt})
+  endif()
+
+  # Now safe: _real is never an ALIAS
+  set_target_properties(${_real} PROPERTIES
+    CXX_VISIBILITY_PRESET default
+    VISIBILITY_INLINES_HIDDEN OFF
+  )
+
+  # Make sure compile flag doesn't get overridden by global hidden visibility
+  target_compile_options(${_real} PRIVATE -fvisibility=default)
+endfunction()
+
+# console_bridge
+if(TARGET console_bridge::console_bridge)
+  _force_default_visibility(console_bridge::console_bridge)
+elseif(TARGET console_bridge)
+  _force_default_visibility(console_bridge)
+endif()
+
+# tinyxml2
+if(TARGET tinyxml2::tinyxml2)
+  _force_default_visibility(tinyxml2::tinyxml2)
+elseif(TARGET tinyxml2)
+  _force_default_visibility(tinyxml2)
+endif()
+
+
+
+add_subdirectory(vendor/urdfdom_headers)
+
+#TODO move this to submodule later on
+if(TARGET urdfdom_headers)
+  target_include_directories(urdfdom_headers INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/urdfdom_headers/include>
+  )
+endif()
+
+#find_package(TinyXML2 REQUIRED)
+#find_package(console_bridge_vendor QUIET) # Provides console_bridge 0.4.0 on platforms without it.
+#find_package(console_bridge REQUIRED)
 
 # Control where libraries and executables are placed during the build
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
 
 enable_testing()
 
-set(CMAKE_CONFIG_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/cmake)
-string(REGEX REPLACE "[^/]+" ".." RELATIVE_PATH_CMAKE_DIR_TO_PREFIX "${CMAKE_CONFIG_INSTALL_DIR}")
-string(REGEX REPLACE "[^/]+" ".." RELATIVE_PATH_LIBDIR_TO_PREFIX "${CMAKE_INSTALL_LIBDIR}")
+#set(CMAKE_CONFIG_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/cmake)
+#string(REGEX REPLACE "[^/]+" ".." RELATIVE_PATH_CMAKE_DIR_TO_PREFIX "${CMAKE_CONFIG_INSTALL_DIR}")
+#string(REGEX REPLACE "[^/]+" ".." RELATIVE_PATH_LIBDIR_TO_PREFIX "${CMAKE_INSTALL_LIBDIR}")
 
 add_subdirectory(urdf_parser)
 
@@ -107,6 +158,6 @@ add_subdirectory(urdf_parser)
 
 message(STATUS "Configuration successful. Type make to compile urdfdom")
 
-SET_DIRECTORY_PROPERTIES(PROPERTIES
-  ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_BINARY_DIR}/cmake/urdfdom-config.cmake
-  ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_BINARY_DIR}/cmake/pkgconfig/urdfdom.pc)
+#SET_DIRECTORY_PROPERTIES(PROPERTIES
+#  ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_BINARY_DIR}/cmake/urdfdom-config.cmake
+#  ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_BINARY_DIR}/cmake/pkgconfig/urdfdom.pc)
