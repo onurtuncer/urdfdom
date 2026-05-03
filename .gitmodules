@@ -1,6 +1,6 @@
 [submodule "vendor/console_bridge"]
 	path = vendor/console_bridge
-	url = git@github.com:onurtuncer/console_bridge.git
+	url = https://github.com/onurtuncer/console_bridge.git
 	branch = master
 [submodule "vendor/urdfdom_headers"]
 	path = vendor/urdfdom_headers
