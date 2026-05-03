@@ -1,0 +1,45 @@
+---
+name: urdfdom Windows CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              name: "Windows Latest MSVC Release",
+              os: windows-latest,
+              build_type: "Release",
+            }
+          - {
+              name: "Windows Latest MSVC Debug",
+              os: windows-latest,
+              build_type: "Debug",
+            }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        shell: bash
+        run: |
+          cmake \
+            -S . \
+            -B build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+
+      - name: Build
+        shell: bash
+        run: cmake --build build --config ${{ matrix.config.build_type }}
+
+      - name: Run tests
+        shell: bash
+        run: |
+          cd build
+          ctest -C ${{ matrix.config.build_type }} --output-on-failure
