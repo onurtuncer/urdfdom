@@ -47,6 +47,12 @@ endif (MSVC OR MSVC90 OR MSVC10)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+# MSVC won't generate a console_bridge import .lib without this because
+# vendor/console_bridge's export header defines CONSOLE_BRIDGE_DLLAPI as empty.
+if(MSVC)
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
 add_subdirectory(vendor/tinyxml2)
 add_subdirectory(vendor/console_bridge)
 
