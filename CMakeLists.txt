@@ -53,6 +53,14 @@ if(MSVC)
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
+# On Windows all DLLs and executables must share a directory so the loader
+# can resolve shared library dependencies at runtime without PATH tricks.
+# console_bridge hardcodes ${CMAKE_BINARY_DIR}/bin in its own CMakeLists.txt,
+# so we match that here for every target built under urdf_parser/.
+if(WIN32)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+endif()
+
 add_subdirectory(vendor/tinyxml2)
 add_subdirectory(vendor/console_bridge)
 
